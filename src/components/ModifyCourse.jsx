@@ -1,33 +1,35 @@
-import { TextField, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Card, Button } from "@mui/material";
-import Course from "./ListAllCourses";
-import CreateCourse from "./CreateCourse";
+import { TextField, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Card, Button, Grid } from '@mui/material';
+import axios from 'axios';
+
+// Could have re-used instead of writing Show course and Create course component
+import Course from './ListAllCourses';
+import CreateCourse from './CreateCourse';
 
 function ModifyCourse() {
   let { courseId } = useParams();
-  const [course, setCourse] = useState([]);
+  const [course, setCourse] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3000/admin/courses/" + courseId, {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    }).then((response) => {
-      response.json().then((data) => {
-        setCourse(data.course);
+    axios
+      .get('http://localhost:3000/admin/course/' + courseId, {
+        headers: {
+          'Content-type': 'application/json',
+          Authorization: 'Bearer ' + localStorage.getItem('token'),
+        },
+      })
+      .then((response) => {
+        setCourse(response.data.course);
       });
-    });
   }, []);
 
   // The id of course passed in url does not exist
   if (!course) {
     return (
       <div>
-        <Typography variant="h1" style={{ justifyContent: "center" }}>
+        <Typography variant="h1" style={{ justifyContent: 'center' }}>
           Course does not exist
         </Typography>
       </div>
@@ -35,120 +37,143 @@ function ModifyCourse() {
   }
 
   return (
-    <div >
-      {/* NOTE: We can also send setCourses as a prop to another component */}
-      <ShowCourse course={course} />
-      <UpdateCourse course={course} setCourse={setCourse} />
+    <div>
+      <GreyTop title={course.title} />
+      <Grid container>
+        <Grid item lg={8} md={12} sm={12}>
+          {/* NOTE: We can also send setCourses as a prop to another component */}
+          <UpdateCourse course={course} setCourse={setCourse} />
+        </Grid>
+        <Grid item lg={4} md={12} sm={12}>
+          <ShowCourse course={course} />
+        </Grid>
+      </Grid>
     </div>
   );
 }
 
-function ShowCourse(props) {
+function GreyTop({ title }) {
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div style={{ height: 250, background: '#212121', top: 0, width: '100vw', zIndex: 0, marginBottom: -250 }}>
+      <div style={{ height: 250, display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
+        <div>
+          <Typography style={{ color: 'white', fontWeight: 600 }} variant="h3" textAlign={'center'}>
+            {title}
+          </Typography>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ShowCourse({ course }) {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
       <Card
         style={{
-          width: 500,
-          padding: 10,
-          minHeight: 100,
+          margin: 60,
+          width: 400,
+          minHeight: 200,
+          //padding: 10,
           maxWidth: 400,
-          textAlign: "center",
-          margin: 10,
+          marginRight: 50,
+          paddingBottom: 15,
+          borderRadius: 30,
+          zIndex: 2,
         }}
       >
-        <img src={props.course.imageLink} style={{ maxWidth: 400, maxHeight: 200 }}></img> <br />{" "}
-        <br />
-        <b>ID: </b> {props.course._id} <br />
-        <b>Title: </b> {props.course.title} <br />
-        <b>Description: </b> {props.course.description} <br />
-        <b>Price: </b> {props.course.price} <br />
-        <b>IsPublished: </b> {props.course.published ? "true" : "false"}
+        <img src={course.imageLink} style={{ width: 400, maxHeight: 200 }}></img>
+        <div style={{ marginLeft: 10 }}>
+          <Typography variant="h6">{course.title}</Typography>
+          <Typography variant="subtitle2" style={{ color: 'gray' }}>
+            Price
+          </Typography>
+          <Typography variant="subtitle1">{course.price}</Typography>
+        </div>
+        {/* <b>ID: </b> {course._id} <br />
+        <b>Title: </b> {course.title} <br />
+        <b>Description: </b> {course.description} <br />
+        <b>Price: </b> {course.price} <br />
+        <b>IsPublished: </b> {course.published ? 'true' : 'false'} */}
       </Card>
     </div>
   );
 }
 
-function UpdateCourse(props) {
-  let courseId = props.course._id;
-  const [title, setTitle] = useState("");
-  const [courseDescription, setCourseDescription] = useState("");
-  const [imageLink, setImageLink] = useState("");
+function UpdateCourse({ course, setCourse }) {
+  let courseId = course._id;
+  const [title, setTitle] = useState(course.title);
+  const [courseDescription, setCourseDescription] = useState(course.description);
+  const [imageLink, setImageLink] = useState(course.imageLink);
+  const [price, setPrice] = useState(course.price);
   return (
-    <div>
-      <div
-        style={{
-         
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: 20,
-        }}
-      >
-        
-        <br /> <br />
-      </div>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <Card style={{ width: 400, padding: 20 }}>
-        <Typography variant="h4" style={{ display: "flex", justifyContent: "center" }} >Update Course</Typography>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Card style={{ width: 400, padding: 20, borderRadius: 15, marginTop:200 }}>
+          <Typography variant="h4" style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+            Update Course
+          </Typography>
           <div>
             <TextField
-              id="title"
+              value={title}
               label="Title"
               variant="outlined"
               fullWidth={true}
+              style={{ marginBottom: 20 }}
               onChange={(e) => setTitle(e.target.value)}
             />
-            <br /> <br />
             <TextField
-              id="description"
+              value={courseDescription}
               label="Description"
               variant="outlined"
-              fullWidth
+              fullWidth={true}
+              style={{ marginBottom: 20 }}
               onChange={(e) => setCourseDescription(e.target.value)}
             />
-            <br /> <br />
             <TextField
-              id="image"
+              value={imageLink}
               label="Image Link"
               variant="outlined"
-              fullWidth
+              fullWidth={true}
+              style={{ marginBottom: 20 }}
               onChange={(e) => setImageLink(e.target.value)}
-            />{" "}
-            <br /> <br />
+            />
+            <TextField
+              value={price}
+              label="Price"
+              variant="outlined"
+              fullWidth={true}
+              onChange={(e) => setPrice(e.target.value)}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "center" }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
             <Button
               size="large"
               variant="contained"
-              onClick={() => {
-                fetch("http://localhost:3000/admin/courses/" + courseId, {
-                  method: "PUT",
-                  body: JSON.stringify({
+              onClick={async () => {
+                const response = await axios.put(
+                  'http://localhost:3000/admin/course/' + courseId,
+                  {
                     title: title,
                     description: courseDescription,
-                    price: 4999,
+                    price: price,
                     imageLink: imageLink,
                     published: true,
-                  }),
-                  headers: {
-                    "Content-type": "application/json",
-                    Authorization: "Bearer " + localStorage.getItem("token"),
                   },
-                }).then((response) => {
-                  response.json().then((data) => {
-                    // Update existing Card here
-                    props.setCourse(data.course);
-                    console.log("-->", data);
-                  });
-                });
+                  {
+                    headers: {
+                      'Content-type': 'application/json',
+                      Authorization: 'Bearer ' + localStorage.getItem('token'),
+                    },
+                  }
+                );
+                setCourse(response.data.course);
               }}
             >
               Update
             </Button>
           </div>
         </Card>
-      </div>
-    </div>
-  );
+      </div>);
 }
 
 export default ModifyCourse;

@@ -19,8 +19,8 @@ function App() {
             <Route path="/signin" element={<Signin />} />
             <Route path="/createcourse" element={<CreateCourse />} />
             <Route path="/courses" element={<ListAllCourses />} />
-            <Route path="/course/:courseId" element={<UpdateCourse />} />
-            {/* <Route path="/courses/:courseId" element={<ModifyCourse />} /> */}
+            {/* <Route path="/course/:courseId" element={<UpdateCourse />} /> */}
+            <Route path="/course/:courseId" element={<ModifyCourse />} />
           </Routes>
         </Router>
       </RecoilRoot>

@@ -12,7 +12,7 @@ function UpdateCourse() {
   // console.log('Update Course component re-rendered');
   useEffect(() => {
     axios
-      .get('http://localhost:3000/admin/courses/' + courseId, {
+      .get('http://localhost:3000/admin/course/' + courseId, {
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token'),
         },
@@ -72,6 +72,7 @@ function ModifyCourse({ courseId }) {
   const [title, setTitle] = useState('');
   const [courseDescription, setCourseDescription] = useState('');
   const [imageLink, setImageLink] = useState('');
+  const [price, setPrice] = useState();
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -80,42 +81,35 @@ function ModifyCourse({ courseId }) {
             Update Course
           </Typography>
           <div>
-            <TextField
-              id="title"
-              label="Title"
-              variant="outlined"
-              fullWidth={true}
-              onChange={(e) => setTitle(e.target.value)}
-            />
+            <TextField label="Title" variant="outlined" fullWidth={true} onChange={(e) => setTitle(e.target.value)} />
             <br /> <br />
             <TextField
-              id="description"
               label="Description"
               variant="outlined"
               fullWidth
               onChange={(e) => setCourseDescription(e.target.value)}
             />
             <br /> <br />
-            <TextField
-              id="image"
-              label="Image Link"
-              variant="outlined"
-              fullWidth
-              onChange={(e) => setImageLink(e.target.value)}
-            />{' '}
+            <TextField label="Image Link" variant="outlined" fullWidth onChange={(e) => setImageLink(e.target.value)} />
             <br /> <br />
+            <TextField
+              label="Price"
+              variant="outlined"
+              fullWidth={true}
+              onChange={(e) => setPrice(e.target.value)}
+            ></TextField>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
             <Button
               size="large"
               variant="contained"
               onClick={async () => {
                 const response = await axios.put(
-                  'http://localhost:3000/admin/courses/' + courseId,
+                  'http://localhost:3000/admin/course/' + courseId,
                   {
                     title: title,
                     description: courseDescription,
-                    price: 4999,
+                    price: price,
                     imageLink: imageLink,
                     published: true,
                   },

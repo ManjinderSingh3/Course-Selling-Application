@@ -59,7 +59,7 @@ function CreateCourse() {
               variant="contained"
               onClick={async () => {
                 await axios.post(
-                  'http://localhost:3000/admin/courses',
+                  'http://localhost:3000/admin/course',
                   {
                     title: courseTitle,
                     description: courseDescription,

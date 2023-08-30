@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 
 router.get('/me', authenticateAdminJWT, async (req, res) => {
   const admin = await Admins.findOne({ username: req.user.username });
-  console.log(admin);
   if (!admin) {
     return res.status(403).json({ message: 'Admin does not exist' });
   }
@@ -15,6 +14,7 @@ router.get('/me', authenticateAdminJWT, async (req, res) => {
   });
 });
 
+// 1- ADMIN Sign-up
 router.post('/signup', async (req, res) => {
   const { username, password } = req.body;
   const admin = await Admins.findOne({ username });
@@ -30,8 +30,9 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+//2- ADMIN Login
 router.post('/login', async (req, res) => {
-  const { username, password } = req.headers;
+  const { username, password } = req.body;
   const admin = await Admins.findOne({ username, password });
   if (admin) {
     const token = jwt.sign({ username }, ADMIN_JWT_SECRET, { expiresIn: '1h' });
@@ -41,13 +42,21 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/courses', authenticateAdminJWT, async (req, res) => {
+// 3- Get all the courses
+router.get('/courses', authenticateAdminJWT, async (req, res) => {
+  const courses = await Courses.find({}); // Empty object because we need all the courses.
+  res.json({ courses });
+});
+
+// 4 - Create a course
+router.post('/course', authenticateAdminJWT, async (req, res) => {
   const course = new Courses(req.body);
   await course.save();
   res.json({ message: 'Course created successfully !!', courseId: course.id });
 });
 
-router.get('/courses/:courseId', authenticateAdminJWT, async (req, res) => {
+// 5- Get a particular course
+router.get('/course/:courseId', authenticateAdminJWT, async (req, res) => {
   const course = await Courses.findById(req.params.courseId);
   if (course) {
     res.json({ message: 'Course Found', course });
@@ -56,7 +65,8 @@ router.get('/courses/:courseId', authenticateAdminJWT, async (req, res) => {
   }
 });
 
-router.put('/courses/:courseId', authenticateAdminJWT, async (req, res) => {
+// 6- Update a particular course
+router.put('/course/:courseId', authenticateAdminJWT, async (req, res) => {
   const course = await Courses.findByIdAndUpdate(req.params.courseId, req.body, {
     new: true,
   });
@@ -65,11 +75,6 @@ router.put('/courses/:courseId', authenticateAdminJWT, async (req, res) => {
   } else {
     res.status(404).json({ message: 'Course not found' });
   }
-});
-
-router.get('/courses', authenticateAdminJWT, async (req, res) => {
-  const courses = await Courses.find({}); // Empty object because we need all the courses.
-  res.json({ courses });
 });
 
 module.exports = router;
