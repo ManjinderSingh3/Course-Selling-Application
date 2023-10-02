@@ -12,7 +12,7 @@ function UpdateCourse() {
   // console.log('Update Course component re-rendered');
   useEffect(() => {
     axios
-      .get('http://localhost:3000/admin/course/' + courseId, {
+      .get(`${BASE_URL}/admin/course/` + courseId, {
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token'),
         },
@@ -83,21 +83,11 @@ function ModifyCourse({ courseId }) {
           <div>
             <TextField label="Title" variant="outlined" fullWidth={true} onChange={(e) => setTitle(e.target.value)} />
             <br /> <br />
-            <TextField
-              label="Description"
-              variant="outlined"
-              fullWidth
-              onChange={(e) => setCourseDescription(e.target.value)}
-            />
+            <TextField label="Description" variant="outlined" fullWidth onChange={(e) => setCourseDescription(e.target.value)} />
             <br /> <br />
             <TextField label="Image Link" variant="outlined" fullWidth onChange={(e) => setImageLink(e.target.value)} />
             <br /> <br />
-            <TextField
-              label="Price"
-              variant="outlined"
-              fullWidth={true}
-              onChange={(e) => setPrice(e.target.value)}
-            ></TextField>
+            <TextField label="Price" variant="outlined" fullWidth={true} onChange={(e) => setPrice(e.target.value)}></TextField>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
             <Button
@@ -105,7 +95,7 @@ function ModifyCourse({ courseId }) {
               variant="contained"
               onClick={async () => {
                 const response = await axios.put(
-                  'http://localhost:3000/admin/course/' + courseId,
+                  `${BASE_URL}/admin/course/` + courseId,
                   {
                     title: title,
                     description: courseDescription,

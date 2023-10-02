@@ -1,6 +1,7 @@
 import { Button, TextField, Typography, Card } from '@mui/material';
 import { useState } from 'react';
 import axios from 'axios';
+import { BASE_URL } from '../config';
 
 function CreateCourse() {
   const [courseTitle, setCourseTitle] = useState('');
@@ -22,12 +23,7 @@ function CreateCourse() {
 
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Card variant="oulined" style={{ width: 400, padding: 20 }}>
-          <TextField
-            label="Title"
-            variant="outlined"
-            fullWidth={true}
-            onChange={(e) => setCourseTitle(e.target.value)}
-          ></TextField>
+          <TextField label="Title" variant="outlined" fullWidth={true} onChange={(e) => setCourseTitle(e.target.value)}></TextField>
           <br /> <br />
           <TextField
             label="Description"
@@ -47,19 +43,14 @@ function CreateCourse() {
             }}
           ></TextField>
           <br /> <br />
-          <TextField
-            label="Price"
-            variant="outlined"
-            fullWidth={true}
-            onChange={(e) => setPrice(e.target.value)}
-          ></TextField>
+          <TextField label="Price" variant="outlined" fullWidth={true} onChange={(e) => setPrice(e.target.value)}></TextField>
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
             <Button
               size="large"
               variant="contained"
               onClick={async () => {
                 await axios.post(
-                  'http://localhost:3000/admin/course',
+                  `${BASE_URL}/admin/course`,
                   {
                     title: courseTitle,
                     description: courseDescription,

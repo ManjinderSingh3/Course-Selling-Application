@@ -2,12 +2,13 @@ import { Card, Typography, Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../config.js';
 
 function ListAllCourses() {
   const [courses, setCourses] = useState([]);
   useEffect(() => {
     axios
-      .get('http://localhost:3000/admin/courses', {
+      .get(`${BASE_URL}/admin/courses`, {
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token'),
         },
