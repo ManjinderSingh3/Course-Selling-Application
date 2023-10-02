@@ -51,7 +51,7 @@ function Appbar() {
           <Button
             variant="contained"
             onClick={() => {
-              localStorage.setItem('token', null);
+              localStorage.setItem('token', '');
               setUser({
                 isLoading: false,
                 userEmail: null,
@@ -94,7 +94,11 @@ function Appbar() {
                 navigate('/signup'); // NAVIGATE hook helps to avoid re-rendering of entire app . If we use (window.location = "/signup) then entire app will re-render by hitting the backend again.
                 // window.location = "/signup";
               }}
-              style={{ borderRadius: 9999, backgroundColor: '#0d9488', fontSize: '.875rem' }}
+              style={{
+                borderRadius: 9999,
+                backgroundColor: '#0d9488',
+                fontSize: '.875rem',
+              }}
             >
               Signup
             </Button>

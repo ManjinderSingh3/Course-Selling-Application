@@ -27,7 +27,7 @@ function ListAllCourses() {
   );
 }
 
-export function Course({ course }) {
+export function Course({ course}) {
   const navigate = useNavigate();
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
