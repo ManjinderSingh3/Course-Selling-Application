@@ -1,7 +1,6 @@
 import express from "express";
 import { Admins, Courses } from "../db";
 import { authenticateAdminJWT, ADMIN_JWT_SECRET } from "../middleware/auth";
-import { z } from "zod";
 import jwt from "jsonwebtoken";
 const router = express.Router();
 import { signupInput } from "@manjinder_dev/common";
@@ -24,18 +23,6 @@ router.get("/me", authenticateAdminJWT, async (req, res) => {
     username: admin.username, // This user is added to request in middleware
   });
 });
-
-/* 
-Backend Input valdations for Signup route. It's a common module so it is placed under common folder
-const signupInput = z.object({
-  username: z.string().min(1).max(15).email(),
-  password: z.string().min(6).max(20),
-  
-});
-*/
-
-// IMPORTANT !! ---- Converting Zod object into a Type which can be used in Frontend. We will make this visible in Frontend. This concept is called ZOD Inference.
-//type SignupParam = z.infer<typeof signupInput>;
 
 // 1- ADMIN Sign-up
 router.post("/signup", async (req, res) => {

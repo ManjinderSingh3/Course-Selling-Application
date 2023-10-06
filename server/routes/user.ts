@@ -4,6 +4,7 @@ import { Users, Admins, Courses } from "../db";
 import jwt from "jsonwebtoken";
 import { authenticateUserJWT, USER_JWT_SECRET } from "../middleware/auth";
 
+// 1. Signup
 router.post("/users/signup", async (req, res) => {
   const { username, password } = req.body;
   const user = await Users.findOne({ username });
@@ -19,6 +20,7 @@ router.post("/users/signup", async (req, res) => {
   }
 });
 
+// 2. Login
 router.post("/users/login", async (req, res) => {
   const { username, password } = req.headers;
   const user = await Users.findOne({ username, password });
@@ -32,13 +34,13 @@ router.post("/users/login", async (req, res) => {
   }
 });
 
-// Get all the published courses
+// 3. Get all the published courses
 router.get("/users/courses", authenticateUserJWT, async (req, res) => {
   const publishedCourses = await Courses.find({ published: true });
   res.json({ publishedCourses });
 });
 
-// Purchase course
+// 4. Purchase a course
 router.post(
   "/users/courses/:courseId",
   authenticateUserJWT,
@@ -48,7 +50,7 @@ router.post(
     if (course) {
       const user = await Users.findOne({ _id: userId });
       if (user) {
-        user.purchasedCourse.push(course);
+        user.purchasedCourse.push(course.id);
         await user.save();
         res.json({ message: "Course purchased successfully !" });
       } else {
@@ -60,7 +62,7 @@ router.post(
   }
 );
 
-// Get Purchased courses
+// 5. Get Purchased courses
 router.get("/users/purchasedCourses", authenticateUserJWT, async (req, res) => {
   const userId = req.headers["userId"];
   const user = await Users.findOne({ _id: userId }).populate("purchasedCourse");
