@@ -3,15 +3,24 @@ const router = express.Router();
 import { Users, Admins, Courses } from "../db";
 import jwt from "jsonwebtoken";
 import { authenticateUserJWT, USER_JWT_SECRET } from "../middleware/auth";
+import { signupInput, loginInput } from "../../common/src";
 
 // 1. Signup
 router.post("/users/signup", async (req, res) => {
-  const { username, password } = req.body;
-  const user = await Users.findOne({ username });
+  const parsedInput = signupInput.safeParse(req.body);
+  if (!parsedInput.success) {
+    return res.status(403).json({
+      error: parsedInput.error,
+    });
+  }
+  const user = await Users.findOne({ username: parsedInput.data.username });
   if (user) {
     res.status(403).json({ message: "User already exist" });
   } else {
-    const newUser = new Users({ username, password });
+    const newUser = new Users({
+      username: parsedInput.data.username,
+      password: parsedInput.data.password,
+    });
     await newUser.save();
     const token = jwt.sign({ id: newUser._id }, USER_JWT_SECRET, {
       expiresIn: "1h",
@@ -22,8 +31,16 @@ router.post("/users/signup", async (req, res) => {
 
 // 2. Login
 router.post("/users/login", async (req, res) => {
-  const { username, password } = req.headers;
-  const user = await Users.findOne({ username, password });
+  const parsedInput = loginInput.safeParse(req.body);
+  if (!parsedInput.success) {
+    return res.status(403).json({
+      error: parsedInput.error,
+    });
+  }
+  const user = await Users.findOne({
+    username: parsedInput.data.username,
+    password: parsedInput.data.password,
+  });
   if (user) {
     const token = jwt.sign({ id: user._id }, USER_JWT_SECRET, {
       expiresIn: "1h",

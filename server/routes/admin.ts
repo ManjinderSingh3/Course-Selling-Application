@@ -3,7 +3,7 @@ import { Admins, Courses } from "../db";
 import { authenticateAdminJWT, ADMIN_JWT_SECRET } from "../middleware/auth";
 import jwt from "jsonwebtoken";
 const router = express.Router();
-import { signupInput } from "@manjinder_dev/common";
+import { signupInput, loginInput } from "../../common/src";
 
 interface Course {
   title: string;
@@ -27,20 +27,20 @@ router.get("/me", authenticateAdminJWT, async (req, res) => {
 // 1- ADMIN Sign-up
 router.post("/signup", async (req, res) => {
   const parsedInput = signupInput.safeParse(req.body);
-  // If there is an error while parsing the body which user sent
   if (!parsedInput.success) {
-    res.status(411).json({
+    // If there is an error while parsing the body which user sent
+    return res.status(411).json({
       error: parsedInput.error,
     });
-    return;
   }
-  const username = parsedInput.data.username;
-  const password = parsedInput.data.password;
-  const admin = await Admins.findOne({ username });
+  const admin = await Admins.findOne({ username: parsedInput.data.username });
   if (admin) {
     res.status(403).json({ message: " Admin already exist" });
   } else {
-    const newAdmin = new Admins({ username, password });
+    const newAdmin = new Admins({
+      username: parsedInput.data.username,
+      password: parsedInput.data.password,
+    });
     await newAdmin.save();
     const token = jwt.sign({ id: newAdmin._id }, ADMIN_JWT_SECRET, {
       expiresIn: "1h",
@@ -51,8 +51,16 @@ router.post("/signup", async (req, res) => {
 
 //2- ADMIN Login
 router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-  const admin = await Admins.findOne({ username, password });
+  const parsedInput = loginInput.safeParse(req.headers);
+  if (!parsedInput.success) {
+    return res.status(403).json({
+      error: parsedInput.error,
+    });
+  }
+  const admin = await Admins.findOne({
+    username: parsedInput.data.username,
+    password: parsedInput.data.password,
+  });
   if (admin) {
     const token = jwt.sign({ id: admin._id }, ADMIN_JWT_SECRET, {
       expiresIn: "1h",
