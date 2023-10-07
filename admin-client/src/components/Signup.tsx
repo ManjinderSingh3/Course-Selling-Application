@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { userState } from '../store/atoms/user.js';
+import { SignupParams } from '../../../common/src'
 
 function Signup() {
   const navigate = useNavigate();

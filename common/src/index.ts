@@ -11,5 +11,5 @@ export const loginInput = z.object({
 });
 
 // IMPORTANT !! --> Converting Zod object into a Type which can be used in Frontend. We will make this visible in Frontend. This concept is called ZOD Inference.
-export type signupParams = z.infer<typeof signupInput>;
-export type loginParams = z.infer<typeof loginInput>;
+export type SignupParams = z.infer<typeof signupInput>;
+export type LoginParams = z.infer<typeof loginInput>;
