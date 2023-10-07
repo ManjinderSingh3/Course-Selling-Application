@@ -3,15 +3,7 @@ import { Admins, Courses } from "../db";
 import { authenticateAdminJWT, ADMIN_JWT_SECRET } from "../middleware/auth";
 import jwt from "jsonwebtoken";
 const router = express.Router();
-import { signupInput, loginInput } from "../../common/src";
-
-interface Course {
-  title: string;
-  description: string;
-  price: Number;
-  imageLink: string;
-  published: Boolean;
-}
+import { signupInput, loginInput, createCourseInput } from "../../common/src";
 
 router.get("/me", authenticateAdminJWT, async (req, res) => {
   const userId = req.headers["userId"];
@@ -79,15 +71,13 @@ router.get("/courses", authenticateAdminJWT, async (req, res) => {
 
 // 4 - Create a course
 router.post("/course", authenticateAdminJWT, async (req, res) => {
-  const courseInputs: Course = req.body;
-  const newCourse = new Courses({
-    title: courseInputs.title,
-    description: courseInputs.description,
-    price: courseInputs.price,
-    imageLink: courseInputs.imageLink,
-    published: courseInputs.published,
-  });
-  //const newCourse = new Courses(req.body);
+  const parsedInput = createCourseInput.safeParse(req.body);
+  if (!parsedInput.success) {
+    return res.status(403).json({
+      error: parsedInput.error,
+    });
+  }
+  const newCourse = new Courses(parsedInput.data);
   await newCourse.save();
   res.json({
     message: "Course created successfully !!",
