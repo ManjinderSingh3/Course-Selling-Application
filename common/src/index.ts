@@ -11,6 +11,7 @@ export const loginInput = z.object({
 });
 
 export const createCourseInput = z.object({
+  _id: z.string(),
   title: z.string(),
   description: z.string(),
   price: z.number(),

@@ -7,12 +7,11 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { userState } from '../store/atoms/user.js';
-import { SignupParams } from '../../../common/src'
 
 function Signup() {
   const navigate = useNavigate();
   const setUser = useSetRecoilState(userState);
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   return (
@@ -36,7 +35,7 @@ function Signup() {
             variant="outlined"
             fullWidth={true}
             onChange={(e) => {
-              setEmail(e.target.value);
+              setUsername(e.target.value);
             }}
             style={{ marginBottom: 10 }}
           />
@@ -57,7 +56,7 @@ function Signup() {
                 const response = await axios.post(
                   `${BASE_URL}/admin/signup`,
                   {
-                    username: email,
+                    username: username,
                     password: password,
                   },
                   {
@@ -67,7 +66,7 @@ function Signup() {
                   }
                 );
                 localStorage.setItem('token', response.data.token);
-                setUser({ isLoading: false, userEmail: email }); // re-rendering
+                setUser({ isLoading: false, userEmail: username }); // re-rendering
                 navigate('/courses');
                 //window.location = '/';  It's a hard reload
               }}

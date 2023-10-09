@@ -4,9 +4,10 @@ import { Users, Courses } from "../db";
 import jwt from "jsonwebtoken";
 import { authenticateUserJWT, USER_JWT_SECRET } from "../middleware/auth";
 import { signupInput, loginInput } from "../../common/src";
+import { Request, Response } from "express";
 
 // 1. Signup
-router.post("/signup", async (req, res) => {
+router.post("/signup", async (req: Request, res: Response) => {
   const parsedInput = signupInput.safeParse(req.body);
   if (!parsedInput.success) {
     return res.status(403).json({
@@ -30,7 +31,7 @@ router.post("/signup", async (req, res) => {
 });
 
 // 2. Login
-router.post("/login", async (req, res) => {
+router.post("/login", async (req: Request, res: Response) => {
   const parsedInput = loginInput.safeParse(req.headers);
   if (!parsedInput.success) {
     return res.status(403).json({
@@ -52,38 +53,52 @@ router.post("/login", async (req, res) => {
 });
 
 // 3. Get all the published courses
-router.get("/courses", authenticateUserJWT, async (req, res) => {
-  const publishedCourses = await Courses.find({ published: true });
-  res.json({ publishedCourses });
-});
+router.get(
+  "/courses",
+  authenticateUserJWT,
+  async (req: Request, res: Response) => {
+    const publishedCourses = await Courses.find({ published: true });
+    res.json({ publishedCourses });
+  }
+);
 
 // 4. Purchase a course
-router.post("/courses/:courseId", authenticateUserJWT, async (req, res) => {
-  const course = await Courses.findById(req.params.courseId);
-  const userId = req.headers["userId"];
-  if (course) {
-    const user = await Users.findOne({ _id: userId });
-    if (user) {
-      user.purchasedCourse.push(course.id);
-      await user.save();
-      res.json({ message: "Course purchased successfully !" });
+router.post(
+  "/courses/:courseId",
+  authenticateUserJWT,
+  async (req: Request, res: Response) => {
+    const course = await Courses.findById(req.params.courseId);
+    const userId = req.headers["userId"];
+    if (course) {
+      const user = await Users.findOne({ _id: userId });
+      if (user) {
+        user.purchasedCourse.push(course.id);
+        await user.save();
+        res.json({ message: "Course purchased successfully !" });
+      } else {
+        res.status(403).json({ message: "User not found " });
+      }
     } else {
-      res.status(403).json({ message: "User not found " });
+      res.status(404).json({ message: "Course not found or published" });
     }
-  } else {
-    res.status(404).json({ message: "Course not found or published" });
   }
-});
+);
 
 // 5. Get Purchased courses
-router.get("/purchasedCourses", authenticateUserJWT, async (req, res) => {
-  const userId = req.headers["userId"];
-  const user = await Users.findOne({ _id: userId }).populate("purchasedCourse");
-  if (user) {
-    res.json({ purchasedCourse: user.purchasedCourse || [] });
-  } else {
-    res.status(403).json({ message: "User not found" });
+router.get(
+  "/purchasedCourses",
+  authenticateUserJWT,
+  async (req: Request, res: Response) => {
+    const userId = req.headers["userId"];
+    const user = await Users.findOne({ _id: userId }).populate(
+      "purchasedCourse"
+    );
+    if (user) {
+      res.json({ purchasedCourse: user.purchasedCourse || [] });
+    } else {
+      res.status(403).json({ message: "User not found" });
+    }
   }
-});
+);
 
 export default router;

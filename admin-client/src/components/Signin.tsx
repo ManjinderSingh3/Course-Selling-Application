@@ -9,7 +9,7 @@ import { userState } from '../store/atoms/user.js';
 function Signin() {
   const navigate = useNavigate();
   const setUser = useSetRecoilState(userState);
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   return (
@@ -32,7 +32,7 @@ function Signin() {
             variant="outlined"
             fullWidth
             onChange={(e) => {
-              setEmail(e.target.value);
+              setUsername(e.target.value);
             }}
             style={{ marginBottom: 10 }}
           />
@@ -52,7 +52,7 @@ function Signin() {
                 const response = await axios.post(
                   `${BASE_URL}/admin/login`,
                   {
-                    username: email,
+                    username: username,
                     password: password,
                   },
                   {
@@ -62,7 +62,7 @@ function Signin() {
                   }
                 );
                 localStorage.setItem('token', response.data.token);
-                setUser({ isLoading: false, userEmail: email });
+                setUser({ isLoading: false, userEmail: username });
                 navigate('/courses');
               }}
             >

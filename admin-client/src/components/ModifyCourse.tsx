@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Button, Grid } from '@mui/material';
 import axios from 'axios';
+
 // Could have re-used instead of writing Show course and Create course component
 import Course from './ListAllCourses';
 import CreateCourse from './CreateCourse';
+
 import { BASE_URL } from '../config';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { courseState } from '../store/atoms/course';
@@ -16,6 +18,7 @@ function ModifyCourse() {
   let { courseId } = useParams();
   const setCourse = useSetRecoilState(courseState); // Setting up Atom
   const courseLoading = useRecoilValue(courseLoadingState); // Subscribed to selector
+
   // const init = async () => {
   //   const response = await axios.get(`${BASE_URL}/admin/course/` + courseId, {
   //     headers: {
@@ -124,11 +127,17 @@ function Price() {
 
 function UpdateCourse() {
   const [courseDetails, setCourse] = useRecoilState(courseState); // Subscribing to a complete Atom
-  console.log(courseDetails);
-  const [title, setTitle] = useState(courseDetails.course.title);
-  const [courseDescription, setCourseDescription] = useState(courseDetails.course.description);
-  const [imageLink, setImageLink] = useState(courseDetails.course.imageLink);
-  const [price, setPrice] = useState(courseDetails.course.price);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [imageLink, setImageLink] = useState('');
+  const [price, setPrice] = useState(0);
+  //const id: String = '';
+  if (courseDetails.course) {
+    setTitle(courseDetails.course.title);
+    setDescription(courseDetails.course.description);
+    setImageLink(courseDetails.course.imageLink);
+    setPrice(courseDetails.course.price);
+  }
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <Card style={{ width: 400, padding: 20, borderRadius: 15, marginTop: 200 }}>
@@ -138,12 +147,12 @@ function UpdateCourse() {
         <div>
           <TextField value={title} label="Title" variant="outlined" fullWidth={true} style={{ marginBottom: 20 }} onChange={(e) => setTitle(e.target.value)} />
           <TextField
-            value={courseDescription} //
+            value={description}
             label="Description"
             variant="outlined"
             fullWidth={true}
             style={{ marginBottom: 20 }}
-            onChange={(e) => setCourseDescription(e.target.value)}
+            onChange={(e) => setDescription(e.target.value)}
           />
           <TextField
             value={imageLink}
@@ -153,7 +162,7 @@ function UpdateCourse() {
             style={{ marginBottom: 20 }}
             onChange={(e) => setImageLink(e.target.value)}
           />
-          <TextField value={price} label="Price" variant="outlined" fullWidth={true} onChange={(e) => setPrice(e.target.value)} />
+          <TextField value={price} label="Price" variant="outlined" fullWidth={true} onChange={(e) => setPrice(parseInt(e.target.value))} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
           <Button
@@ -161,10 +170,10 @@ function UpdateCourse() {
             variant="contained"
             onClick={async () => {
               const response = await axios.put(
-                `${BASE_URL}/admin/course/` + courseDetails.course._id,
+                `${BASE_URL}/admin/course/` + courseDetails.course?._id || ' ',
                 {
                   title: title,
-                  description: courseDescription,
+                  description: description,
                   price: price,
                   imageLink: imageLink,
                   published: true,

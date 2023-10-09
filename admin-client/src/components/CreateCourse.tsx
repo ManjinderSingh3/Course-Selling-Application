@@ -4,10 +4,10 @@ import axios from 'axios';
 import { BASE_URL } from '../config';
 
 function CreateCourse() {
-  const [courseTitle, setCourseTitle] = useState('');
-  const [courseDescription, setCourseDescription] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [imageLink, setImage] = useState('');
-  const [price, setPrice] = useState();
+  const [price, setPrice] = useState(0);
   return (
     <div>
       <div
@@ -22,18 +22,17 @@ function CreateCourse() {
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Card variant="oulined" style={{ width: 400, padding: 20 }}>
-          <TextField label="Title" variant="outlined" fullWidth={true} onChange={(e) => setCourseTitle(e.target.value)}></TextField>
-          <br /> <br />
+        <Card variant={'outlined'} style={{ width: 400, padding: 20 }}>
+          <TextField label="Title" variant="outlined" fullWidth={true} onChange={(e) => setTitle(e.target.value)} style={{ marginBottom: 15 }} />
           <TextField
             label="Description"
             variant="outlined"
             fullWidth={true}
             onChange={(e) => {
-              setCourseDescription(e.target.value);
+              setDescription(e.target.value);
             }}
-          ></TextField>
-          <br /> <br />
+            style={{ marginBottom: 15 }}
+          />
           <TextField
             label="Image Link"
             variant="outlined"
@@ -41,19 +40,18 @@ function CreateCourse() {
             onChange={(e) => {
               setImage(e.target.value);
             }}
-          ></TextField>
-          <br /> <br />
-          <TextField label="Price" variant="outlined" fullWidth={true} onChange={(e) => setPrice(e.target.value)}></TextField>
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
+            style={{ marginBottom: 15 }}
+          />
+          <TextField label="Price" variant="outlined" fullWidth={true} onChange={(e) => setPrice(parseInt(e.target.value))} />
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 15 }}>
             <Button
-              size="large"
               variant="contained"
               onClick={async () => {
                 await axios.post(
                   `${BASE_URL}/admin/course`,
                   {
-                    title: courseTitle,
-                    description: courseDescription,
+                    title: title,
+                    description: description,
                     imageLink: imageLink,
                     price: price,
                   },

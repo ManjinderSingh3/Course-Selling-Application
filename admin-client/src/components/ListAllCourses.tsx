@@ -1,33 +1,35 @@
-import { Card, Typography, Button } from '@mui/material';
+import { Card, Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../config.js';
+import { Course } from '../interfaces/types';
+import { CreateCourseInputParams } from '../../../common/src/index.ts';
 
 function ListAllCourses() {
   const [courses, setCourses] = useState([]);
+  const init = async () => {
+    const response = await axios.get(`${BASE_URL}/admin/courses`, {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('token'),
+      },
+    });
+    setCourses(response.data.courses);
+  };
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/admin/courses`, {
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token'),
-        },
-      })
-      .then((response) => {
-        setCourses(response.data.courses);
-      });
+    init();
   }, []);
 
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-      {courses.map((course, index) => {
-        return <Course key={index} course={course} />;
+      {courses.map((course) => {
+        return <Course course={course} />;
       })}
     </div>
   );
 }
 
-export function Course({ course}) {
+export function Course({ course }: { course: CreateCourseInputParams }) {
   const navigate = useNavigate();
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
