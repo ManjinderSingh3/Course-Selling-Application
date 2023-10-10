@@ -1,9 +1,8 @@
-import { Card, Button } from '@mui/material';
+import { Card, Button, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../config.js';
-import { Course } from '../interfaces/types';
 import { CreateCourseInputParams } from '../../../common/src/index.ts';
 
 function ListAllCourses() {
@@ -22,8 +21,8 @@ function ListAllCourses() {
 
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-      {courses.map((course) => {
-        return <Course course={course} />;
+      {courses.map((course, index) => {
+        return <Course key={index} course={course} />;
       })}
     </div>
   );
@@ -44,11 +43,21 @@ export function Course({ course }: { course: CreateCourseInputParams }) {
         }}
       >
         <img src={course.imageLink} style={{ maxWidth: 400, maxHeight: 200 }}></img> <br /> <br />
-        <b>ID: </b> {course._id} <br />
-        <b>Title: </b> {course.title} <br />
-        <b>Description: </b> {course.description} <br />
-        <b>Price: </b> {course.price} <br />
-        <b>IsPublished: </b> {course.published ? 'true' : 'false'}
+        <Typography>
+          <b>ID:</b> {course._id}
+        </Typography>
+        <Typography>
+          <b>Title:</b> {course.title}
+        </Typography>
+        <Typography>
+          <b>Description:</b> {course.description}
+        </Typography>
+        <Typography>
+          <b>Price:</b> {course.price}
+        </Typography>
+        <Typography>
+          <b>IsPublished:</b> {course.published ? 'True' : 'False'}
+        </Typography>
         <div style={{ marginTop: 20 }}>
           <Button
             variant="contained"

@@ -67,7 +67,7 @@ function Signup() {
                 );
                 localStorage.setItem('token', response.data.token);
                 setUser({ isLoading: false, userEmail: username }); // re-rendering
-                navigate('/courses');
+                navigate('/');
                 //window.location = '/';  It's a hard reload
               }}
             >

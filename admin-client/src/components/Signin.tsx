@@ -1,7 +1,7 @@
 import { Button, Card, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BASE_URL } from '../config.js';
+import { BASE_URL } from '../config.ts';
 import axios from 'axios';
 import { useSetRecoilState } from 'recoil';
 import { userState } from '../store/atoms/user.js';

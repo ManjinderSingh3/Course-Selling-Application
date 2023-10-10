@@ -56,6 +56,7 @@ function Appbar() {
                 isLoading: false,
                 userEmail: null,
               });
+              navigate('/')
               //window.location = '/';
             }}
           >

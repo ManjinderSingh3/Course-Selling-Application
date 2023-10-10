@@ -3,15 +3,10 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, Button, Grid } from '@mui/material';
 import axios from 'axios';
-
-// Could have re-used instead of writing Show course and Create course component
-import Course from './ListAllCourses';
-import CreateCourse from './CreateCourse';
-
 import { BASE_URL } from '../config';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { courseState } from '../store/atoms/course';
-import { courseLoadingState, courseDetailsState, courseTitleState, coursePriceState, courseImageState } from '../store/selectors/course';
+import { courseLoadingState, courseTitleState, coursePriceState, courseImageState } from '../store/selectors/course';
 import { Loading } from './Loading';
 
 function ModifyCourse() {
@@ -19,22 +14,7 @@ function ModifyCourse() {
   const setCourse = useSetRecoilState(courseState); // Setting up Atom
   const courseLoading = useRecoilValue(courseLoadingState); // Subscribed to selector
 
-  // const init = async () => {
-  //   const response = await axios.get(`${BASE_URL}/admin/course/` + courseId, {
-  //     headers: {
-  //       'Content-type': 'application/json',
-  //       Authorization: 'Bearer ' + localStorage.getItem('token'),
-  //     },
-  //   });
-  //   console.log('-->', response);
-  //   if (response.data.course) {
-  //     setCourse({ isLoading: false, course: response.data.course });
-  //   } else {
-  //     setCourse({ isLoading: false, course: null });
-  //   }
-  // };
   useEffect(() => {
-    //init();
     axios
       .get(`${BASE_URL}/admin/course/${courseId}`, {
         headers: {
@@ -127,17 +107,10 @@ function Price() {
 
 function UpdateCourse() {
   const [courseDetails, setCourse] = useRecoilState(courseState); // Subscribing to a complete Atom
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [imageLink, setImageLink] = useState('');
-  const [price, setPrice] = useState(0);
-  //const id: String = '';
-  if (courseDetails.course) {
-    setTitle(courseDetails.course.title);
-    setDescription(courseDetails.course.description);
-    setImageLink(courseDetails.course.imageLink);
-    setPrice(courseDetails.course.price);
-  }
+  const [title, setTitle] = useState(courseDetails.course?.title || ' ');
+  const [description, setDescription] = useState(courseDetails.course?.description || ' ');
+  const [imageLink, setImageLink] = useState(courseDetails.course?.imageLink || '');
+  const [price, setPrice] = useState(courseDetails.course?.price || 0);
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <Card style={{ width: 400, padding: 20, borderRadius: 15, marginTop: 200 }}>
