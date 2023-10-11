@@ -11,12 +11,12 @@ export const loginInput = z.object({
 });
 
 export const createCourseInput = z.object({
-  _id: z.string(),
+  _id: z.string().optional(),
   title: z.string(),
   description: z.string(),
   price: z.number(),
   imageLink: z.string(),
-  published: z.boolean(),
+  published: z.boolean().optional(),
 });
 
 // IMPORTANT !! --> Converting Zod object into a Type which can be used in Frontend. We will make this visible in Frontend. This concept is called ZOD Inference.

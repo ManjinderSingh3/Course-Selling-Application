@@ -26,7 +26,12 @@ function Appbar() {
           padding: 5,
         }}
       >
-        <div>
+        <div
+          style={{ marginLeft: 10, cursor: 'pointer' }}
+          onClick={() => {
+            navigate('/');
+          }}
+        >
           <Typography variant="h5"> CourseHub</Typography>
         </div>
         <div>
@@ -56,7 +61,7 @@ function Appbar() {
                 isLoading: false,
                 userEmail: null,
               });
-              navigate('/')
+              navigate('/');
               //window.location = '/';
             }}
           >
@@ -74,7 +79,12 @@ function Appbar() {
           padding: 5,
         }}
       >
-        <div>
+        <div
+          style={{ marginLeft: 10, cursor: 'pointer' }}
+          onClick={() => {
+            navigate('/');
+          }}
+        >
           <Typography variant="h5"> CourseHub</Typography>
         </div>
         <div style={{ display: 'flex' }}>
