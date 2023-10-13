@@ -44,7 +44,7 @@ router.post("/signup", async (req: Request, res: Response) => {
 
 //2- ADMIN Login
 router.post("/login", async (req: Request, res: Response) => {
-  const parsedInput = loginInput.safeParse(req.headers);
+  const parsedInput = loginInput.safeParse(req.body);
   if (!parsedInput.success) {
     return res.status(403).json({
       error: parsedInput.error,

@@ -30,7 +30,7 @@ function Signin() {
           <TextField
             label="Username"
             variant="outlined"
-            fullWidth
+            fullWidth = {true}
             onChange={(e) => {
               setUsername(e.target.value);
             }}
@@ -39,7 +39,7 @@ function Signin() {
           <TextField
             label="Password"
             variant="outlined"
-            fullWidth
+            fullWidth = {true}
             onChange={(e) => {
               setPassword(e.target.value);
             }}

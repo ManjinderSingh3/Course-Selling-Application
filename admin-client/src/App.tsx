@@ -1,34 +1,32 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Appbar from "./components/Appbar.jsx";
-import Home from "./components/Home.jsx";
-import Signup from "./components/Signup.jsx";
-import Signin from "./components/Signin.jsx";
-import CreateCourse from "./components/CreateCourse.jsx";
-import ListAllCourses from "./components/ListAllCourses.jsx";
-import ModifyCourse from "./components/ModifyCourse.jsx";
-import { RecoilRoot, useSetRecoilState } from "recoil";
-import { useEffect } from "react";
-import axios from "axios";
-import { BASE_URL } from "./config.js";
-import { userState } from "./store/atoms/user.js";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Appbar from './components/Appbar.jsx';
+import Home from './components/Home.jsx';
+import Signup from './components/Signup.jsx';
+import Signin from './components/Signin.jsx';
+import CreateCourse from './components/CreateCourse.jsx';
+import ListAllCourses from './components/ListAllCourses.jsx';
+import ModifyCourse from './components/ModifyCourse.jsx';
+import { RecoilRoot, useSetRecoilState } from 'recoil';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { BASE_URL } from './config.js';
+import { userState } from './store/atoms/user.js';
 
 function App() {
   return (
     <RecoilRoot>
-      <div
-        style={{ width: "100vw", height: "100vh", backgroundColor: "#eeeeee" }}
-      >
+      <div style={{ width: '100vw', height: '100vh', backgroundColor: '#eeeeee' }}>
         <div style={{ marginLeft: 60, marginRight: 60 }}>
           <Router>
             <Appbar />
             <InitUser />
             <Routes>
-              <Route path={"/"} element={<Home />} />
-              <Route path={"/signup"} element={<Signup />} />
-              <Route path={"/signin"} element={<Signin />} />
-              <Route path="/courses" element={<ListAllCourses />} />
-              <Route path={"/createcourse"} element={<CreateCourse />} />
-              <Route path={"/course/:courseId"} element={<ModifyCourse />} />
+              <Route path={'/'} element={<Home />} />
+              <Route path={'/signup'} element={<Signup />} />
+              <Route path={'/signin'} element={<Signin />} />
+              <Route path={'/courses'} element={<ListAllCourses />} />
+              <Route path={'/createcourse'} element={<CreateCourse />} />
+              <Route path={'/course/:courseId'} element={<ModifyCourse />} />
               {/* <Route path="/course/:courseId" element={<UpdateCourse />} /> */}
             </Routes>
           </Router>
@@ -46,7 +44,7 @@ function InitUser() {
     try {
       const response = await axios.get(`${BASE_URL}/admin/me`, {
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
+          Authorization: 'Bearer ' + localStorage.getItem('token'),
         },
       });
       if (response.data.username) {
